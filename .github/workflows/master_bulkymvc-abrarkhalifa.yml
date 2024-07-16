@@ -53,4 +53,4 @@ jobs:
           app-name: 'BulkyMVC-AbrarKhalifa'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7BFCB139242245CBACF0F8ED01D85B56 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DC0028AD248C4BE8BF42FD6380A1CB86 }}
