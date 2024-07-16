@@ -13,6 +13,7 @@ namespace Bulky.DataAccess.DBInitializer
 {
     public class DBInitializer : IDBInitializer
     {
+        //this class is for  automatic creation of database along with admin role
 
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
