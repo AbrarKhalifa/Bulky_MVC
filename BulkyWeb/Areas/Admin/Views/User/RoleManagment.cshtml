@@ -1,0 +1,97 @@
+﻿@model RoleManagementVM
+
+
+<div class="card shadow border-0 mt-2">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+
+            <div class="col-12 text-center">
+                <h2 class="py-2 text-white">Manage User Role</h2>
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body p-3">
+
+        <div class="row pt-1">
+
+            <div class="col-md-12">
+                <form id="registerForm" class="row" method="post">
+                    <input asp-for="ApplicationUser.Id" hidden />
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="@Model.ApplicationUser.Name" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="@Model.ApplicationUser.Name" class="ms-2 text-muted">Name</label>
+                    </div>
+
+
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="@Model.ApplicationUser.Role" name="ApplicationUser.Role" asp-items="@Model.RoleList" class="form-select">
+                        </select>
+                    </div>
+
+                    @{
+                        var companyVisible = "display:none;";
+                    }
+
+                    @if (Model.ApplicationUser.Role.Equals(SD.Role_Company))
+                    {
+                        companyVisible = "display:block;";
+                    }
+                    <div class="form-floating py-2 col-12">
+                            <select asp-for="@Model.ApplicationUser.CompanyId" style=@companyVisible asp-items="@Model.CompanyList" class="form-select">
+                            </select>
+                        </div>
+                      
+
+                   
+                    <div class="row pt-2">
+
+                        <div class="col-6 col-md-3">
+                            <button type="submit" class="btn btn-primary form-control">Update Role</button>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <a asp-action="Index" class="btn btn-outline-primary border form-control">Back To List</a>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    @*      this code for dropdown as per value which is dependent on another dropdown
+ *@    
+ 
+ 
+ <script>
+
+               $(document).ready(function () {
+
+            $('#ApplicationUser_Role').change(function () {
+
+                var selection = $('#ApplicationUser_Role Option:Selected').text();
+                       if (selection == 'Company') {
+                    $('#ApplicationUser_CompanyId').show();
+                       }
+                       else {
+                    $('#ApplicationUser_CompanyId').hide();
+
+                       }
+
+                   })
+
+               })
+
+    </script>
+}
+ 
+ 

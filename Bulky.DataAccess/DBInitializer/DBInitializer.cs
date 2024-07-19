@@ -40,48 +40,45 @@ namespace Bulky.DataAccess.DBInitializer
                     _db.Database.Migrate();
                 }
 
-            }catch (Exception ex)
+            }catch (Exception ex) { }
+
+
+
+            // Create roles if they are not created
+            if (!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult())
             {
-                
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Employee)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Company)).GetAwaiter().GetResult();
 
-                // Create roles if they are not created
-                if (!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult())
+
+                //if roles are not created, then we will create admin user as well
+
+                _userManager.CreateAsync(new ApplicationUser
                 {
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Employee)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Company)).GetAwaiter().GetResult();
+                    UserName = "admin@abrar.com",
+                    Email = "admin@abrar.com",
+                    Name = "Abrar Khalifa",
+                    PhoneNumber = "6353666071",
+                    StreetAddress = "Barkociya Road",
+                    State = "Gujarat",
+                    PostalCode = "387001",
+                    City = "Nadiad"
+                }, "Admin@1234").GetAwaiter().GetResult();
 
 
-                    //if roles are not created, then we will create admin user as well
+                ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@abrar.com");
 
-                    _userManager.CreateAsync(new ApplicationUser
-                    {
-                        UserName = "admin@abrar.com",
-                        Email = "admin@abrar.com",
-                        Name = "Abrar Khalifa",
-                        PhoneNumber = "6353666071",
-                        StreetAddress = "Barkociya Road",
-                        State = "Gujarat",
-                        City = "Nadiad",
-                        PostalCode = "387001"
-                    }, "admin@1234").GetAwaiter().GetResult();
-                
-                
-                    ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u=>u.Email == "admin@abrar.com");
+                _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
 
-                    _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
-                
-                
-                
-                }
+            }
 
                 return;
 
 
 
-            }
-
+            
         }
     }
 }

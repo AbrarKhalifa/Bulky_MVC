@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -29,6 +30,9 @@ namespace Bulky.Models
         [ForeignKey(nameof(CompanyId))]
         [ValidateNever]
         public Company? Company { get; set; }
+
+        [NotMapped]
+        public string Role { get; set; }
 
     }
 }
