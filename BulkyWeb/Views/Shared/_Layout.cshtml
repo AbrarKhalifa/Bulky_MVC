@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" />
 
 </head>
-<body>
+<body class="container-fluid p-0 m-0">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -63,6 +63,9 @@
                                     <li>
                                         <a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">Manage User</a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Banner" asp-action="Create">Create Banner</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -83,10 +86,13 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div>
         <main role="main" class="pb-3">
             <partial name="_Notification" />
+            <div class="row">
             @RenderBody()
+
+            </div>
         </main>
     </div>
 

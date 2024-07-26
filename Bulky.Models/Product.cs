@@ -57,5 +57,6 @@ namespace Bulky.Models
 
         [ValidateNever]
         public List<ProductImage> ProductImages { get; set; }
+
     }
 }

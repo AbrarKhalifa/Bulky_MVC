@@ -1,9 +1,13 @@
 using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
+using Bulky.Models.ViewModels;
 using Bulky.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -15,6 +19,8 @@ namespace BulkyWeb.Areas.Customer.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
+        [BindProperty]
+        private BannerVM BannerVM { get; set; }
 
 
         public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
@@ -24,13 +30,66 @@ namespace BulkyWeb.Areas.Customer.Controllers
         }
 
 
-
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index(string? search, string? status, string? categories)
         {
-            
 
-            IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").ToList();
-            return View(productList);
+            IEnumerable<Product> productList;
+
+            var category = _unitOfWork.Category.GetAll().ToList();
+            ViewBag.CategoryList = new SelectList(category, "Id", "Name");
+
+            if (search != null)
+            {
+                productList = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").Where(x => x.Title.ToLower().StartsWith(search)).ToList();
+
+                if (productList.Count() == 0)
+                {
+                    productList = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").ToList();
+                    TempData["error"] = "No result found!";
+                }
+
+               
+            }
+            else
+            { 
+             productList = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").ToList();
+
+              
+            }
+
+
+            switch (status)
+            {
+                case "PriceASC":
+                    productList = productList.OrderBy(x => x.Price100);
+                    break;
+                case "PriceDESC":
+                    productList = productList.OrderByDescending(x => x.Price100);
+                    break;
+                default:
+                    break;
+
+            }
+
+            if(categories != null)
+            {
+                productList = productList.Where(x => x.Category.Name == categories);
+                if(productList.Count() == 0)
+                {
+                    TempData["error"] = "No Book Found!";
+                }
+            }
+
+
+            BannerVM = new BannerVM()
+            {
+                Product = productList,
+                BannerImage = _unitOfWork.BannerImage.GetAll().ToList()
+            };
+
+            return View(BannerVM);
+
         }
 
 
@@ -73,7 +132,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
                 _unitOfWork.ShoppingCart.Update(getCartFromDb);
                 _unitOfWork.Save();
 
-             
+
 
             }
             else

@@ -1,14 +1,156 @@
-﻿@model IEnumerable<Product>
+﻿@model BannerVM
+
+﻿@{
+    var status = Context.Request.Query["status"];
+    var PriceASC = "text-primary";
+    var PriceDESC = "text-primary";
+    var all = "text-primary";
+
+    switch (status)
+    {
+        case "PriceASC":
+            PriceASC = "active text-white bg-primary";
+            break;
+        case "PriceDESC":
+            PriceDESC = "active text-white bg-primary";
+            break;
+
+        default:
+            all = "active text-white bg-primary";
+            break;
+
+    }
+
+}
+         
+            @if (Model.BannerImage != null && Model.BannerImage.Count() > 0)
+            {
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        @foreach (var imageWithIndex in Model.BannerImage.Select((image, index) => new { Image = image, Index = index }))
+                        {
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@imageWithIndex.Index"
+                                    class="@(imageWithIndex.Index == 0 ? "active" : "")" aria-current="true" aria-label="Slide @imageWithIndex.Index + 1"></button>
+                        }
+                    </div>
+                    <div class="carousel-inner">
+                        @foreach (var imageWithIndex in Model.BannerImage.Select((image, index) => new { Image = image, Index = index }))
+                        {
+                            <div class="@(imageWithIndex.Index == 0 ? "carousel-item active" : "carousel-item")">
+                                <img src="@imageWithIndex.Image.ImageUrl" class="d-block w-100" alt="...">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>@imageWithIndex.Image.Title</h5>
+                                    <p>
+                                        @Html.Raw(@imageWithIndex.Image.Description)
+                                        </p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            }
+
+ 
+    <div class="card-body pt-4">
+        <div class="d-flex justify-content-between pb-5 pt-2">
+            <span></span>
+            <div class="col-md-5 mx-auto ">
+
+            <form method="get">
+
+                <div class="input-group">
+                    <input name="search" class="form-control border-end-0 border rounded-pill" type="search" placeholder="search" id="example-search-input">
+                    <span class="input-group-append">
+                        <button class="btn btn-outline-secondary bg-white border-bottom-0 border rounded-pill ms-n5 pb-2 pt-2" type="submit">
+                            <i class="bi bi-search "></i>
+                        </button> 
+                    </span>
+
+                </div>
+
+            </form>
+
+            </div>
+
+            <div class="col-md-5">
+
+            <!-- Split dropright button -->
+            <div class="btn-group dropend">
+                <button class="btn btn-success dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown">
+                    Sort By Price
+                </button>
+                <ul class="dropdown-menu list-group-horizontal-sm">
+                    <li class="list-group-item @PriceASC">
+                        <a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-status="PriceASC">
+                            Low To High
+                        </a>
+                    </li>
+                        <li class="list-group-item @PriceDESC">
+                            <a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-status="PriceDESC">
+                            High To Low
+                        </a>
+                    </li>
+                   
+                </ul>
+            </div>
+
+            <!-- Split dropright button for category-->
+
+            <div class="btn-group dropend">
+                <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Sort By Category
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-item disabled">
+                        Select Category
+                    </li>
+
+                    @foreach (var item in ViewBag.CategoryList)
+                    {
+                        <li class="dropdown-item">
+                            <a asp-action="Index" asp-controller="Home" asp-route-categories="@item.Text">
+                                <span>@item.Text</span>
+
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                
+            </div>
+
+            <div class="d-inline-flex">
+                <ul class="list-group list-group-horizontal-sm">
 
 
+                    <a style="text-decoration:none;" asp-controller="Home" asp-action="Index" asp-route-status="all">
+                    <li class="list-group-item @all">All</li>
+                    </a>
+                </ul>
+            </div>
 
+            
+        </div>
+    </div>
+
+    </div>
     <div class="row pb-3 mb-5">
-    @foreach(var product in Model)
+    @foreach(var product in Model.Product)
     {
         <div class="col-lg-3 col-sm-6">
             <div class="row p-2">
                 <div class="col-12 p-1">
-                    
+
                     <div class="card border-0 p-3 shadow border-top border-5 rounded">
 
                         @if(product.ProductImages != null && product.ProductImages.Count() > 0)
@@ -51,7 +193,5 @@
             </div>
     }
 </div>
-
-
 
 

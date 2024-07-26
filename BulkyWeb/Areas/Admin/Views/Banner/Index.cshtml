@@ -1,0 +1,41 @@
+﻿@model BannerVM
+
+<div class="container-fluid w-100">
+
+    @if (Model.BannerImage != null && Model.BannerImage.Count() > 0)
+    {
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                @foreach (var imageWithIndex in Model.BannerImage.Select((image, index) => new { Image = image, Index = index }))
+                {
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@imageWithIndex.Index"
+                            class="@(imageWithIndex.Index == 0 ? "active" : "")" aria-current="true" aria-label="Slide @imageWithIndex.Index + 1"></button>
+                }
+            </div>
+            <div class="carousel-inner">
+                @foreach (var imageWithIndex in Model.BannerImage.Select((image, index) => new { Image = image, Index = index }))
+                {
+                    <div class="@(imageWithIndex.Index == 0 ? "carousel-item active" : "carousel-item")">
+                        <img src="@imageWithIndex.Image.ImageUrl" class="d-block w-100" alt="...">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>@imageWithIndex.Image.Title</h5>
+                            <p>
+                                @Html.Raw(@imageWithIndex.Image.Description)
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    }
+
+
+</div>

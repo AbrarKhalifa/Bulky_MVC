@@ -31,7 +31,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
+        
 
         public IActionResult Index()
         {
